@@ -1,0 +1,63 @@
+2026-10-01 09:33:39.893 +06:00 [INF] User profile is available. Using 'C:\Users\User\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-10-01 09:33:40.321 +06:00 [INF] Now listening on: https://localhost:7189
+2026-10-01 09:33:40.324 +06:00 [INF] Now listening on: http://localhost:5297
+2026-10-01 09:33:40.541 +06:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-10-01 09:33:40.545 +06:00 [INF] Hosting environment: Development
+2026-10-01 09:33:40.546 +06:00 [INF] Content root path: G:\ASP.NET Core\Projects-2026\Examprep.API\Examprep.API
+2026-10-01 09:33:43.336 +06:00 [INF] Request starting HTTP/2 GET https://localhost:7189/swagger/index.html - null null
+2026-10-01 09:33:44.281 +06:00 [INF] Request finished HTTP/2 GET https://localhost:7189/swagger/index.html - 200 null text/html;charset=utf-8 992.7221ms
+2026-10-01 09:33:44.340 +06:00 [INF] Request starting HTTP/2 GET https://localhost:7189/_vs/browserLink - null null
+2026-10-01 09:33:44.340 +06:00 [INF] Request starting HTTP/2 GET https://localhost:7189/_framework/aspnetcore-browser-refresh.js - null null
+2026-10-01 09:33:44.480 +06:00 [INF] Request finished HTTP/2 GET https://localhost:7189/_framework/aspnetcore-browser-refresh.js - 200 13760 application/javascript; charset=utf-8 141.5242ms
+2026-10-01 09:33:44.688 +06:00 [INF] Request finished HTTP/2 GET https://localhost:7189/_vs/browserLink - 200 null text/javascript; charset=UTF-8 349.0317ms
+2026-10-01 09:33:45.111 +06:00 [INF] Request starting HTTP/2 GET https://localhost:7189/swagger/v1/swagger.json - null null
+2026-10-01 09:33:45.272 +06:00 [INF] Request finished HTTP/2 GET https://localhost:7189/swagger/v1/swagger.json - 200 null application/json;charset=utf-8 171.2561ms
+2026-10-01 09:33:57.744 +06:00 [INF] Request starting HTTP/2 POST https://localhost:7189/api/v1/auth/login - application/json 51
+2026-10-01 09:33:57.840 +06:00 [INF] CORS policy execution successful.
+2026-10-01 09:33:59.678 +06:00 [INF] Executing endpoint 'Examprep.API.Controllers.AuthController.Login (Examprep.API)'
+2026-10-01 09:33:59.731 +06:00 [INF] Route matched with {action = "Login", controller = "Auth"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] Login(Examprep.Application.DTOs.LoginDto) on controller Examprep.API.Controllers.AuthController (Examprep.API).
+2026-10-01 09:34:02.911 +06:00 [INF] Executed DbCommand (144ms) [Parameters=[@__email_0='?' (Size = 450)], CommandType='"Text"', CommandTimeout='30']
+SELECT TOP(1) [u].[Id], [u].[CreatedAt], [u].[Email], [u].[PasswordHash], [u].[QuestionCount], [u].[RefreshToken], [u].[RefreshTokenExpiry], [u].[Role]
+FROM [Users] AS [u]
+WHERE [u].[Email] = @__email_0
+2026-10-01 09:34:04.046 +06:00 [INF] Executed DbCommand (14ms) [Parameters=[@p7='?' (DbType = Int32), @p0='?' (DbType = DateTime2), @p1='?' (Size = 450), @p2='?' (Size = 4000), @p3='?' (DbType = Int32), @p4='?' (Size = 450), @p5='?' (DbType = DateTime2), @p6='?' (Size = 4000)], CommandType='"Text"', CommandTimeout='30']
+SET IMPLICIT_TRANSACTIONS OFF;
+SET NOCOUNT ON;
+UPDATE [Users] SET [CreatedAt] = @p0, [Email] = @p1, [PasswordHash] = @p2, [QuestionCount] = @p3, [RefreshToken] = @p4, [RefreshTokenExpiry] = @p5, [Role] = @p6
+OUTPUT 1
+WHERE [Id] = @p7;
+2026-10-01 09:34:04.076 +06:00 [INF] Executing OkObjectResult, writing value of type 'Examprep.Application.DTOs.TokenResponseDto'.
+2026-10-01 09:34:04.092 +06:00 [INF] Executed action Examprep.API.Controllers.AuthController.Login (Examprep.API) in 4351.4799ms
+2026-10-01 09:34:04.095 +06:00 [INF] Executed endpoint 'Examprep.API.Controllers.AuthController.Login (Examprep.API)'
+2026-10-01 09:34:04.099 +06:00 [INF] POST /api/v1/auth/login took 6267 ms
+2026-10-01 09:34:04.112 +06:00 [INF] Request finished HTTP/2 POST https://localhost:7189/api/v1/auth/login - 200 null application/json; charset=utf-8 6368.4639ms
+2026-10-01 09:34:22.942 +06:00 [INF] Request starting HTTP/2 GET https://localhost:7189/api/v1/questions - null null
+2026-10-01 09:34:23.029 +06:00 [INF] Failed to validate the token.
+Microsoft.IdentityModel.Tokens.SecurityTokenSignatureKeyNotFoundException: IDX10517: Signature validation failed. The token's kid is missing. Keys tried: 'Microsoft.IdentityModel.Tokens.SymmetricSecurityKey, KeyId: '', InternalId: 'wSYGFdkEOp1c339xAHim75IzjrJ0QmROJLSqQeIvoO8'. , KeyId: \r\n'.
+Number of keys in TokenValidationParameters: '1'. 
+Number of keys in Configuration: '0'.
+Exceptions caught:
+ '[PII of type 'System.Text.StringBuilder' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'.
+token: '[PII of type 'Microsoft.IdentityModel.JsonWebTokens.JsonWebToken' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'. See https://aka.ms/IDX10503 for details.
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateSignature(JsonWebToken jwtToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateSignatureAndIssuerSecurityKey(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+   at Microsoft.IdentityModel.JsonWebTokens.JsonWebTokenHandler.ValidateJWSAsync(JsonWebToken jsonWebToken, TokenValidationParameters validationParameters, BaseConfiguration configuration)
+2026-10-01 09:34:23.036 +06:00 [INF] Bearer was not authenticated. Failure message: IDX10517: Signature validation failed. The token's kid is missing. Keys tried: 'Microsoft.IdentityModel.Tokens.SymmetricSecurityKey, KeyId: '', InternalId: 'wSYGFdkEOp1c339xAHim75IzjrJ0QmROJLSqQeIvoO8'. , KeyId: \r\n'.
+Number of keys in TokenValidationParameters: '1'. 
+Number of keys in Configuration: '0'.
+Exceptions caught:
+ '[PII of type 'System.Text.StringBuilder' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'.
+token: '[PII of type 'Microsoft.IdentityModel.JsonWebTokens.JsonWebToken' is hidden. For more details, see https://aka.ms/IdentityModel/PII.]'. See https://aka.ms/IDX10503 for details.
+2026-10-01 09:34:23.038 +06:00 [INF] Executing endpoint 'Examprep.API.Controllers.QuestionsController.GetQuestion (Examprep.API)'
+2026-10-01 09:34:23.046 +06:00 [INF] Route matched with {action = "GetQuestion", controller = "Questions"}. Executing controller action with signature System.Threading.Tasks.Task`1[Microsoft.AspNetCore.Mvc.IActionResult] GetQuestion() on controller Examprep.API.Controllers.QuestionsController (Examprep.API).
+2026-10-01 09:34:23.053 +06:00 [INF] Fetching questions from DB
+2026-10-01 09:34:23.173 +06:00 [INF] Executed DbCommand (10ms) [Parameters=[], CommandType='"Text"', CommandTimeout='30']
+SELECT [q].[id] AS [Id], [q].[text] AS [Text], [q].[UserId], [u].[Email] AS [UserEmail]
+FROM [Questions] AS [q]
+LEFT JOIN [Users] AS [u] ON [q].[UserId] = [u].[Id]
+ORDER BY [q].[id]
+2026-10-01 09:34:23.182 +06:00 [INF] Executing OkObjectResult, writing value of type 'System.Collections.Generic.List`1[[Examprep.Application.DTOs.QuestionResponseDto, Examprep.Application, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]'.
+2026-10-01 09:34:23.193 +06:00 [INF] Executed action Examprep.API.Controllers.QuestionsController.GetQuestion (Examprep.API) in 144.4937ms
+2026-10-01 09:34:23.196 +06:00 [INF] Executed endpoint 'Examprep.API.Controllers.QuestionsController.GetQuestion (Examprep.API)'
+2026-10-01 09:34:23.199 +06:00 [INF] GET /api/v1/questions took 246 ms
+2026-10-01 09:34:23.203 +06:00 [INF] Request finished HTTP/2 GET https://localhost:7189/api/v1/questions - 200 null application/json; charset=utf-8 260.6587ms

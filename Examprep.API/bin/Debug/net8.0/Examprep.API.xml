@@ -1,0 +1,119 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Examprep.API</name>
+    </assembly>
+    <members>
+        <member name="T:Examprep.API.Controllers.QuestionsController">
+            <summary>
+            Manage questions in the Examprep system
+            </summary>
+        </member>
+        <member name="M:Examprep.API.Controllers.QuestionsController.GetQuestion">
+            <summary>Get all questions</summary>
+            <returns>List of all questions</returns>
+        </member>
+        <member name="M:Examprep.API.Controllers.QuestionsController.GetQuestionById(System.Int32)">
+            <summary>Get a question by its ID</summary>
+            <param name="id">The question ID</param>
+        </member>
+        <member name="M:Examprep.API.Controllers.QuestionsController.SearchQuestion(System.String)">
+            <summary>Search questions by text</summary>
+            <param name="search">Text to search for</param>
+        </member>
+        <member name="M:Examprep.API.Controllers.QuestionsController.GetPaged(System.Int32,System.Int32)">
+            <summary>Get paged questions</summary>
+            <param name="page">Page number (default 1)</param>
+            <param name="pageSize">Items per page (default 10, max 100)</param>
+        </member>
+        <member name="M:Examprep.API.Controllers.QuestionsController.Query(Examprep.Application.DTOs.QuestionQueryDto)">
+            <summary>Advanced query with search, sorting, and paging</summary>
+            <param name="dto">Query parameters</param>
+        </member>
+        <member name="M:Examprep.API.Controllers.QuestionsController.CreateQuestion(Examprep.Application.DTOs.QuestionCreateDto)">
+            <summary>Create a new question (requires login)</summary>
+            <param name="dto">Question data</param>
+        </member>
+        <member name="M:Examprep.API.Controllers.QuestionsController.UpdateQuestion(System.Int32,Examprep.Application.DTOs.QuestionUpdateDto)">
+            <summary>Update an existing question (requires login)</summary>
+            <param name="id">Question ID</param>
+            <param name="dto">New question data</param>
+        </member>
+        <member name="M:Examprep.API.Controllers.QuestionsController.DeleteQuestion(System.Int32)">
+            <summary>Delete a question (Admin only)</summary>
+            <param name="id">Question ID</param>
+        </member>
+        <member name="T:Examprep.API.Migrations.InitialCreate">
+            <inheritdoc />
+        </member>
+        <member name="M:Examprep.API.Migrations.InitialCreate.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Examprep.API.Migrations.InitialCreate.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Examprep.API.Migrations.InitialCreate.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:Examprep.API.Migrations.AddUserTable">
+            <inheritdoc />
+        </member>
+        <member name="M:Examprep.API.Migrations.AddUserTable.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Examprep.API.Migrations.AddUserTable.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Examprep.API.Migrations.AddUserTable.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:Examprep.API.Migrations.AddRefreshToken">
+            <inheritdoc />
+        </member>
+        <member name="M:Examprep.API.Migrations.AddRefreshToken.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Examprep.API.Migrations.AddRefreshToken.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Examprep.API.Migrations.AddRefreshToken.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:Examprep.API.Migrations.AddUserToQuestion">
+            <inheritdoc />
+        </member>
+        <member name="M:Examprep.API.Migrations.AddUserToQuestion.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Examprep.API.Migrations.AddUserToQuestion.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Examprep.API.Migrations.AddUserToQuestion.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:Examprep.API.Migrations.AddUserQuestionCount">
+            <inheritdoc />
+        </member>
+        <member name="M:Examprep.API.Migrations.AddUserQuestionCount.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Examprep.API.Migrations.AddUserQuestionCount.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Examprep.API.Migrations.AddUserQuestionCount.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="T:Examprep.API.Migrations.AddIndexes">
+            <inheritdoc />
+        </member>
+        <member name="M:Examprep.API.Migrations.AddIndexes.Up(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Examprep.API.Migrations.AddIndexes.Down(Microsoft.EntityFrameworkCore.Migrations.MigrationBuilder)">
+            <inheritdoc />
+        </member>
+        <member name="M:Examprep.API.Migrations.AddIndexes.BuildTargetModel(Microsoft.EntityFrameworkCore.ModelBuilder)">
+            <inheritdoc />
+        </member>
+    </members>
+</doc>

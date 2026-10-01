@@ -1,0 +1,14 @@
+G:\ASP.NET Core\Projects-2026\Examprep.API\Examprep.Client\bin\Debug\net8.0\Examprep.Client.exe
+G:\ASP.NET Core\Projects-2026\Examprep.API\Examprep.Client\bin\Debug\net8.0\Examprep.Client.deps.json
+G:\ASP.NET Core\Projects-2026\Examprep.API\Examprep.Client\bin\Debug\net8.0\Examprep.Client.runtimeconfig.json
+G:\ASP.NET Core\Projects-2026\Examprep.API\Examprep.Client\bin\Debug\net8.0\Examprep.Client.dll
+G:\ASP.NET Core\Projects-2026\Examprep.API\Examprep.Client\bin\Debug\net8.0\Examprep.Client.pdb
+G:\ASP.NET Core\Projects-2026\Examprep.API\Examprep.Client\obj\Debug\net8.0\Examprep.Client.GeneratedMSBuildEditorConfig.editorconfig
+G:\ASP.NET Core\Projects-2026\Examprep.API\Examprep.Client\obj\Debug\net8.0\Examprep.Client.AssemblyInfoInputs.cache
+G:\ASP.NET Core\Projects-2026\Examprep.API\Examprep.Client\obj\Debug\net8.0\Examprep.Client.AssemblyInfo.cs
+G:\ASP.NET Core\Projects-2026\Examprep.API\Examprep.Client\obj\Debug\net8.0\Examprep.Client.csproj.CoreCompileInputs.cache
+G:\ASP.NET Core\Projects-2026\Examprep.API\Examprep.Client\obj\Debug\net8.0\Examprep.Client.dll
+G:\ASP.NET Core\Projects-2026\Examprep.API\Examprep.Client\obj\Debug\net8.0\refint\Examprep.Client.dll
+G:\ASP.NET Core\Projects-2026\Examprep.API\Examprep.Client\obj\Debug\net8.0\Examprep.Client.pdb
+G:\ASP.NET Core\Projects-2026\Examprep.API\Examprep.Client\obj\Debug\net8.0\Examprep.Client.genruntimeconfig.cache
+G:\ASP.NET Core\Projects-2026\Examprep.API\Examprep.Client\obj\Debug\net8.0\ref\Examprep.Client.dll

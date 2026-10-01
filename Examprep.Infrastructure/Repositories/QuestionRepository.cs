@@ -1,0 +1,131 @@
+﻿using Examprep.Application.DTOs;
+using Examprep.Application.Repositories;
+using Examprep.Domain.Model;
+using Examprep.Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
+
+namespace Examprep.Infrastructure.Repositories
+{
+    public class QuestionRepository: IQuestionRepository
+    {
+        private readonly AppDbContext _context;
+        public QuestionRepository(AppDbContext context)
+        {
+            _context = context;
+        }
+
+        public async Task<List<QuestionResponseDto>> GetAllQuestionsAsync()
+        {
+            return await _context.Questions
+                .AsNoTracking()
+                .OrderBy(q => q.id)
+                .Select(q => new QuestionResponseDto
+                {
+                    Id = q.id,
+                    Text = q.text,
+                    UserId = q.UserId,
+                    UserEmail = q.User != null ? q.User.Email : null
+                })
+                .ToListAsync();
+        }
+
+        public async Task<Question?> GetQuestionByIdAsync(int id)
+        {
+            return await _context.Questions
+    .AsNoTracking()
+    .Include(q => q.User)
+    .FirstOrDefaultAsync(q => q.id == id);
+        }
+
+        public async Task AddQuestionAsync(Question question)
+        {
+            _context.Questions.Add(question);
+            await _context.SaveChangesAsync();
+        }
+        
+        public async Task UpdateQuestionAsync(Question question)
+        {
+            _context.Questions.Update(question);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task DeleteQuestionAsync(Question question)
+        {
+            _context.Questions.Remove(question);
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<(List<Question> items, int totalCount)> GetPagedAsync(int page, int pageSize)
+        {
+            var query = _context.Questions.AsNoTracking().AsQueryable();
+            var totalCount = await query.CountAsync();
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+            return (items, totalCount);
+        }
+        public async Task<(List<QuestionResponseDto> items, int totalCount)> QueryAsync(
+     string? search, string? sortBy, string? sortDir, int page, int pageSize)
+        {
+            var query = _context.Questions.AsNoTracking().AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+                query = query.Where(q => q.text.Contains(search));
+
+            query = sortBy?.ToLower() switch
+            {
+                "text" => sortDir == "desc"
+                    ? query.OrderByDescending(q => q.text)
+                    : query.OrderBy(q => q.text),
+                _ => sortDir == "desc"
+                    ? query.OrderByDescending(q => q.id)
+                    : query.OrderBy(q => q.id),
+            };
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .Select(q => new QuestionResponseDto
+                {
+                    Id = q.id,
+                    Text = q.text,
+                    UserId = q.UserId,
+                    UserEmail = q.User != null ? q.User.Email : null
+                })
+                .ToListAsync();
+
+            return (items, totalCount);
+        }
+
+
+        public async Task AddQuestionWithCounterAsync(Question question, int userId)
+        {
+            using var transaction = await _context.Database.BeginTransactionAsync();
+            try
+            {
+                // 1. Add question
+                _context.Questions.Add(question);
+                await _context.SaveChangesAsync();
+
+                // 2. Increment user's counter
+                var user = await _context.Users.FindAsync(userId);
+                if (user != null)
+                {
+                    user.QuestionCount += 1;
+                    await _context.SaveChangesAsync();
+                }
+
+                await transaction.CommitAsync();
+            }
+            catch
+            {
+                await transaction.RollbackAsync();
+                throw;
+            }
+        }
+
+    }
+}
