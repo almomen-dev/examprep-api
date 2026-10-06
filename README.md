@@ -61,7 +61,7 @@ Questions:
 3. Add the JWT key via user secrets
 4. Run `dotnet ef database update`
 5. Run `dotnet run --project Examprep.API`
-6. Open Swagger at https://localhost:7189/swagger
+6. Open Swagger at https://localhost:7189/swagger](http://almomen.runasp.net/
 
 ## Testing
 
