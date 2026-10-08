@@ -22,7 +22,6 @@ namespace Examprep.API.Controllers
         }
 
         /// <summary>Get all questions</summary>
-        /// <returns>List of all questions</returns>
         [HttpGet]
         public async Task<IActionResult> GetQuestion()
         {
@@ -31,7 +30,6 @@ namespace Examprep.API.Controllers
         }
 
         /// <summary>Get a question by its ID</summary>
-        /// <param name="id">The question ID</param>
         [HttpGet("{id}")]
         public async Task<IActionResult> GetQuestionById([FromRoute] int id)
         {
@@ -51,7 +49,6 @@ namespace Examprep.API.Controllers
         }
 
         /// <summary>Search questions by text</summary>
-        /// <param name="search">Text to search for</param>
         [HttpGet("search")]
         public async Task<IActionResult> SearchQuestion([FromQuery] string search)
         {
@@ -60,8 +57,6 @@ namespace Examprep.API.Controllers
         }
 
         /// <summary>Get paged questions</summary>
-        /// <param name="page">Page number (default 1)</param>
-        /// <param name="pageSize">Items per page (default 10, max 100)</param>
         [HttpGet("paged")]
         public async Task<IActionResult> GetPaged([FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
@@ -73,7 +68,6 @@ namespace Examprep.API.Controllers
         }
 
         /// <summary>Advanced query with search, sorting, and paging</summary>
-        /// <param name="dto">Query parameters</param>
         [HttpGet("query")]
         public async Task<IActionResult> Query([FromQuery] QuestionQueryDto dto)
         {
@@ -82,21 +76,18 @@ namespace Examprep.API.Controllers
         }
 
         /// <summary>Create a new question (requires login)</summary>
-        /// <param name="dto">Question data</param>
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> CreateQuestion([FromBody] QuestionCreateDto dto)
         {
             var userId = int.Parse(User.FindFirst(
-            System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+                System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
 
-            var question = await _questionService.CreateQuestionAsync(dto,userId);
+            var question = await _questionService.CreateQuestionAsync(dto, userId);
             return CreatedAtAction(nameof(GetQuestionById), new { id = question.Id }, question);
         }
 
         /// <summary>Update an existing question (requires login)</summary>
-        /// <param name="id">Question ID</param>
-        /// <param name="dto">New question data</param>
         [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateQuestion(int id, [FromBody] QuestionUpdateDto dto)
@@ -117,7 +108,6 @@ namespace Examprep.API.Controllers
         }
 
         /// <summary>Delete a question (Admin only)</summary>
-        /// <param name="id">Question ID</param>
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteQuestion(int id)
@@ -135,6 +125,47 @@ namespace Examprep.API.Controllers
             }
 
             return NoContent();
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPost("upload-csv")]
+        public async Task<IActionResult> UploadCsv(IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest(new { message = "No file provided" });
+
+            if (!file.FileName.EndsWith(".csv", StringComparison.OrdinalIgnoreCase))
+                return BadRequest(new { message = "Only .csv files allowed" });
+
+            var dtos = new List<QuestionCreateDto>();
+            using var reader = new StreamReader(file.OpenReadStream());
+
+            var header = await reader.ReadLineAsync();   // skip header
+            while (!reader.EndOfStream)
+            {
+                var line = await reader.ReadLineAsync();
+                if (string.IsNullOrWhiteSpace(line)) continue;
+
+                var cols = line.Split(',');
+                if (cols.Length < 2) continue;
+
+                dtos.Add(new QuestionCreateDto
+                {
+                    Text = cols[0].Trim(),
+                    OptionA = cols.Length > 1 ? cols[1].Trim() : null,
+                    OptionB = cols.Length > 2 ? cols[2].Trim() : null,
+                    OptionC = cols.Length > 3 ? cols[3].Trim() : null,
+                    OptionD = cols.Length > 4 ? cols[4].Trim() : null,
+                    CorrectOption = cols.Length > 5 ? cols[5].Trim() : null,
+                    Category = cols.Length > 6 ? cols[6].Trim() : null
+                });
+            }
+
+            var userId = int.Parse(User.FindFirst(
+                System.Security.Claims.ClaimTypes.NameIdentifier)!.Value);
+
+            var result = await _questionService.BulkUploadAsync(dtos, userId);
+            return Ok(result);
         }
     }
 }

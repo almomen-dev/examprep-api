@@ -8,11 +8,6 @@ namespace Examprep.Application.Services
     public class AuthService
     {
         private readonly IUserRepository _repo;
-        public AuthService(IUserRepository userRepository) { 
-        
-            _repo = userRepository;
-
-        }
         private readonly TokenService _tokenService;
 
         public AuthService(IUserRepository repo, TokenService tokenService)
@@ -79,7 +74,7 @@ namespace Examprep.Application.Services
             {
                 Email = dto.Email,
                 PasswordHash = PasswordHasher.Hash(dto.Password),
-                Role = string.IsNullOrEmpty(dto.Role) ? "User" : dto.Role
+                Role = dto.Role == "Admin" ? "Admin" : "User"
             };  
 
             var createdUser = await _repo.AddAsync(user);

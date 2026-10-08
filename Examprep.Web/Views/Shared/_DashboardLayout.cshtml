@@ -1,0 +1,305 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+<style>
+    /* Hide the public navbar and footer */
+    .public-nav, body > footer { display: none !important; }
+
+    body { margin: 0; }
+
+    /* Top Navbar - Off-white, semi-transparent */
+    .dash-navbar {
+        position: fixed;
+        top: 0; left: 0; right: 0;
+        height: 64px;
+        background: rgba(255, 255, 255, 0.85);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        color: #334155;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 1.5rem;
+        z-index: 1050;
+        border-bottom: 1px solid #e2e8f0;
+    }
+
+    .dash-navbar .brand {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #0f172a;
+        text-decoration: none;
+    }
+
+    .dash-navbar .user-badge {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: #fff;
+        padding: 0.4rem 1rem;
+        border-radius: 50px;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.02);
+    }
+
+    .dash-navbar .user-badge .email { color: #334155; font-size: 0.9rem; }
+    .dash-navbar .user-badge .role {
+        background: #4f46e5;
+        color: #fff;
+        padding: 0.15rem 0.6rem;
+        border-radius: 50px;
+        font-size: 0.7rem;
+        font-weight: 600;
+    }
+
+    .dash-navbar .logout {
+        color: #ef4444;
+        text-decoration: none;
+        margin-left: 0.5rem;
+    }
+
+    /* Sidebar - Rounded, floating */
+    .sidebar-modern {
+        position: fixed;
+        top: 80px;
+        left: 16px;
+        bottom: 16px;
+        width: 260px;
+        background: #1e293b;
+        color: #94a3b8;
+        display: flex;
+        flex-direction: column;
+        transition: width 0.25s ease, left 0.25s ease, top 0.25s ease, bottom 0.25s ease;
+        z-index: 1040;
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(15, 23, 42, 0.15);
+        overflow: hidden;
+    }
+
+    .sidebar-modern.collapsed { width: 72px; }
+
+    /* Sidebar Toggle */
+    .sidebar-toggle {
+        padding: 0.9rem 1.2rem;
+        color: #94a3b8;
+        cursor: pointer;
+        border-bottom: 1px solid rgba(255,255,255,0.05);
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+        font-size: 1.25rem;
+        transition: color 0.2s ease;
+    }
+
+    .sidebar-toggle:hover { color: #fff; }
+
+    .sidebar-nav {
+        flex: 1;
+        padding: 1rem 0.75rem;
+        overflow-y: auto;
+    }
+
+    .sidebar-nav .nav-link {
+        color: #94a3b8;
+        padding: 0.8rem 1rem;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 0.25rem;
+        font-weight: 500;
+        transition: all 0.15s ease;
+        text-decoration: none;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+
+    .sidebar-nav .nav-link:hover {
+        background-color: #334155;
+        color: #f1f5f9;
+    }
+
+    .sidebar-nav .nav-link.active {
+        background-color: #4f46e5;
+        color: #fff;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+    }
+
+    .sidebar-nav .nav-link i {
+        font-size: 1.2rem;
+        min-width: 22px;
+        text-align: center;
+        flex-shrink: 0;
+    }
+
+    .sidebar-nav .label { transition: opacity 0.15s ease; }
+
+    /* Collapsed mode */
+    .sidebar-modern.collapsed .label,
+    .sidebar-modern.collapsed .section-title { display: none; }
+
+    .sidebar-modern.collapsed .nav-link {
+        justify-content: center;
+        padding: 0.8rem 0.5rem;
+    }
+
+    .sidebar-modern.collapsed .sidebar-toggle {
+        justify-content: center;
+    }
+
+    .section-title {
+        margin: 1rem 0.75rem 0.5rem;
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #64748b;
+    }
+
+    /* Main Content */
+    .main-wrapper {
+        margin-left: 292px;
+        margin-top: 64px;
+        min-height: calc(100vh - 64px);
+        display: flex;
+        flex-direction: column;
+        transition: margin-left 0.25s ease;
+        background: #f8fafc;
+    }
+
+    .main-wrapper.expanded { margin-left: 104px; }
+
+    .content-area {
+        padding: 1.5rem 2rem 2rem 2rem;
+        flex: 1;
+    }
+
+    /* Mobile */
+    @@media (max-width: 991.98px) {
+        .sidebar-modern {
+            top: 80px;
+            left: 16px;
+            bottom: 16px;
+            transform: translateX(-120%);
+            width: 260px;
+        }
+        .sidebar-modern.show { transform: translateX(0); }
+        .sidebar-modern.collapsed { width: 260px; }
+        .sidebar-modern.collapsed .label,
+        .sidebar-modern.collapsed .section-title { display: block; }
+        .sidebar-modern.collapsed .nav-link { justify-content: flex-start; padding: 0.8rem 1rem; }
+        .sidebar-modern.collapsed .sidebar-toggle { justify-content: flex-end; }
+        .main-wrapper, .main-wrapper.expanded { margin-left: 0; }
+        .mobile-toggle { display: flex !important; }
+    }
+
+    .mobile-toggle {
+        display: none;
+        background: transparent;
+        border: none;
+        color: #334155;
+        font-size: 1.25rem;
+        margin-right: 1rem;
+    }
+</style>
+
+<!-- Top Navbar -->
+<div class="dash-navbar">
+    <div class="d-flex align-items-center">
+        <button class="mobile-toggle" onclick="toggleMobileSidebar()"><i class="bi bi-list"></i></button>
+        <a href="/" class="brand">
+            <i class="bi bi-mortarboard-fill text-primary"></i> Examprep
+        </a>
+    </div>
+
+    <div class="d-flex align-items-center">
+        @if (Context.Session.GetString("jwt") != null)
+        {
+            <div class="user-badge">
+                <i class="bi bi-person-circle text-primary"></i>
+                <span class="email">@Context.Session.GetString("email")</span>
+                <span class="role">@Context.Session.GetString("role")</span>
+                <a href="/Account/Logout" class="logout" title="Logout">
+                    <i class="bi bi-box-arrow-right"></i>
+                </a>
+            </div>
+        }
+    </div>
+</div>
+
+<!-- Sidebar -->
+<aside class="sidebar-modern" id="sidebar">
+    <!-- Toggle Button -->
+    <div class="sidebar-toggle" onclick="toggleSidebar()" title="Collapse/Expand">
+        <i class="bi bi-list" id="toggleIcon"></i>
+    </div>
+
+    <nav class="sidebar-nav">
+        <a asp-controller="Home" asp-action="Dashboard" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Dashboard" ? "active" : "")">
+            <i class="bi bi-grid-1x2-fill"></i><span class="label">Dashboard</span>
+        </a>
+        <a asp-controller="Questions" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Questions" ? "active" : "")">
+            <i class="bi bi-journal-text"></i><span class="label">Question Bank</span>
+        </a>
+
+        @if (Context.Session.GetString("jwt") != null)
+        {
+            <div class="section-title">Exams</div>
+            <a asp-controller="Exam" asp-action="Start" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Start" ? "active" : "")">
+                <i class="bi bi-pencil-square"></i><span class="label">Take Exam</span>
+            </a>
+            <a asp-controller="Exam" asp-action="History" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "History" ? "active" : "")">
+                <i class="bi bi-clock-history"></i><span class="label">My History</span>
+            </a>
+            <a asp-controller="Home" asp-action="Leaderboard" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "Leaderboard" ? "active" : "")">
+                <i class="bi bi-trophy-fill"></i><span class="label">Leaderboard</span>
+            </a>
+        }
+
+        @if (Context.Session.GetString("role") == "Admin")
+        {
+            <div class="section-title">Admin</div>
+            <a asp-controller="Users" asp-action="Index" class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Users" ? "active" : "")">
+                <i class="bi bi-people-fill"></i><span class="label">Manage Users</span>
+            </a>
+            <a asp-controller="Exam" asp-action="AllResults" class="nav-link @(ViewContext.RouteData.Values["Action"]?.ToString() == "AllResults" ? "active" : "")">
+                <i class="bi bi-bar-chart-fill"></i><span class="label">All Results</span>
+            </a>
+        }
+    </nav>
+</aside>
+
+<!-- Main Content -->
+<div class="main-wrapper" id="mainWrapper">
+    <main class="content-area">@RenderBody()</main>
+</div>
+
+<script>
+    function toggleSidebar() {
+        var sidebar = document.getElementById('sidebar');
+        var main = document.getElementById('mainWrapper');
+        var icon = document.getElementById('toggleIcon');
+
+        sidebar.classList.toggle('collapsed');
+        main.classList.toggle('expanded');
+
+        if (sidebar.classList.contains('collapsed')) {
+            icon.classList.remove('bi-list');
+            icon.classList.add('bi-chevron-right');
+        } else {
+            icon.classList.remove('bi-chevron-right');
+            icon.classList.add('bi-list');
+        }
+    }
+
+    function toggleMobileSidebar() {
+        document.getElementById('sidebar').classList.toggle('show');
+    }
+</script>
+
+@await RenderSectionAsync("Styles", required: false)
+@await RenderSectionAsync("Scripts", required: false)

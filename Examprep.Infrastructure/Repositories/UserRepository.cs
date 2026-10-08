@@ -65,5 +65,17 @@ namespace Examprep.Infrastructure.Repositories
             return (items, totalCount);
         }
 
+        public async Task<List<User>> GetAllAsync()
+    => await _context.Users.AsNoTracking().ToListAsync();
+
+        public async Task<User?> GetByIdAsync(int id)
+            => await _context.Users.FindAsync(id);
+
+        public async Task DeleteAsync(User user)
+        {
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+        }
+
     }
 }

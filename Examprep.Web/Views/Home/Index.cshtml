@@ -1,0 +1,145 @@
+﻿@{
+    ViewData["Title"] = "Welcome";
+}
+
+<style>
+    .hero-section {
+        background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%);
+        padding: 6rem 2rem;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 800;
+        line-height: 1.2;
+        color: #0f172a;
+    }
+
+    .feature-card {
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        transition: all 0.3s ease;
+        background: #fff;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.05);
+            border-color: #cbd5e1;
+        }
+
+    .icon-box {
+        width: 56px;
+        height: 56px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+    }
+
+    /* Job Exams text — solid indigo color */
+    .text-gradient {
+        color: #4f46e5;
+    }
+</style>
+
+<!-- Hero Section -->
+<div class="hero-section mb-5">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <span class="badge bg-white text-primary border px-3 py-2 rounded-pill mb-3 shadow-sm">
+                    <i class="bi bi-stars"></i> #1 Exam Preparation Platform
+                </span>
+                <h1 class="hero-title mb-4">
+                    Master Your <br />
+                    <span class="text-gradient">Job Exams</span> <br />
+                    with Confidence.
+                </h1>
+                <p class="lead text-muted mb-4" style="max-width: 500px;">
+                    Practice with a growing bank of questions, take realistic model tests, and track your progress effortlessly.
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="/Account/Register" class="btn btn-primary btn-lg px-4 py-3 fw-medium shadow-sm">
+                        <i class="bi bi-rocket-takeoff me-2"></i> Start Practicing Free
+                    </a>
+                    <a href="/Account/Login" class="btn btn-white btn-lg px-4 py-3 fw-medium border shadow-sm">
+                        <i class="bi bi-play-circle me-2"></i> View Demo
+                    </a>
+                </div>
+
+                <div class="d-flex gap-4 mt-5 pt-3 border-top border-secondary border-opacity-10">
+                    <div><h4 class="fw-bold mb-0">10k+</h4><small class="text-muted">Questions</small></div>
+                    <div><h4 class="fw-bold mb-0">500+</h4><small class="text-muted">Model Tests</small></div>
+                    <div><h4 class="fw-bold mb-0">5k+</h4><small class="text-muted">Active Users</small></div>
+                </div>
+            </div>
+
+            <div class="col-lg-6 text-center d-none d-lg-block">
+                <div class="position-relative">
+                    <div class="card border-0 shadow-lg rounded-4 p-4 mx-auto" style="max-width: 400px; background: rgba(255,255,255,0.8); backdrop-filter: blur(10px);">
+                        <div class="d-flex align-items-center mb-4 border-bottom pb-3">
+                            <div class="bg-primary text-white rounded-circle d-flex align-items-center justify-content-center me-3" style="width: 40px; height: 40px;">
+                                <i class="bi bi-person"></i>
+                            </div>
+                            <div class="text-start">
+                                <h6 class="mb-0 fw-bold">Practice Session</h6>
+                                <small class="text-muted">Math - Set 01</small>
+                            </div>
+                            <div class="ms-auto text-primary fw-bold">18:24</div>
+                        </div>
+                        <div class="text-start">
+                            <div class="d-flex justify-content-between mb-1">
+                                <small class="fw-medium">Progress</small>
+                                <small class="text-primary fw-bold">65%</small>
+                            </div>
+                            <div class="progress" style="height: 8px;">
+                                <div class="progress-bar bg-primary" style="width: 65%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="position-absolute top-0 start-0 bg-white p-3 rounded-3 shadow-sm border mt-5 ms-n4">
+                        <i class="bi bi-check-circle-fill text-success fs-4"></i>
+                    </div>
+                    <div class="position-absolute bottom-0 end-0 bg-white p-3 rounded-3 shadow-sm border mb-5 me-n4">
+                        <i class="bi bi-graph-up-arrow text-info fs-4"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Features Section -->
+<div class="container mb-5">
+    <div class="text-center mb-5">
+        <h2 class="fw-bold">Everything you need to succeed</h2>
+        <p class="text-muted">We provide the tools, you provide the dedication.</p>
+    </div>
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card feature-card h-100 p-4">
+                <div class="icon-box bg-primary bg-opacity-10 text-primary mb-4"><i class="bi bi-database"></i></div>
+                <h5 class="fw-bold">Vast Question Bank</h5>
+                <p class="text-muted mb-0">Access thousands of curated questions covering Math, English, GK, and current affairs.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card h-100 p-4">
+                <div class="icon-box bg-info bg-opacity-10 text-info mb-4"><i class="bi bi-graph-up"></i></div>
+                <h5 class="fw-bold">Smart Analytics</h5>
+                <p class="text-muted mb-0">Identify your weak points with detailed performance reports after every test.</p>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card feature-card h-100 p-4">
+                <div class="icon-box bg-success bg-opacity-10 text-success mb-4"><i class="bi bi-stopwatch"></i></div>
+                <h5 class="fw-bold">Timed Mock Tests</h5>
+                <p class="text-muted mb-0">Simulate the real exam environment with our precise countdown timers.</p>
+            </div>
+        </div>
+    </div>
+</div>

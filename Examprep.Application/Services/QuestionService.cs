@@ -60,7 +60,13 @@ namespace Examprep.Application.Services
             var question = new Question
             {
                 text = dto.Text,
-                UserId = userId
+                UserId = userId,
+                OptionA = dto.OptionA,
+                OptionB = dto.OptionB,
+                OptionC = dto.OptionC,
+                OptionD = dto.OptionD,
+                CorrectOption = dto.CorrectOption,
+                Category = dto.Category
             };
 
             await _repo.AddQuestionWithCounterAsync(question, userId);
@@ -129,7 +135,7 @@ namespace Examprep.Application.Services
             if (dto.PageSize < 1 || dto.PageSize > 100) dto.PageSize = 10;
 
             var (items, totalCount) = await _repo.QueryAsync(
-                dto.Search, dto.SortBy, dto.SortDir, dto.Page, dto.PageSize);
+    dto.Search, dto.Category, dto.SortBy, dto.SortDir, dto.Page, dto.PageSize);
 
             return new PagedResultDto<QuestionResponseDto>
             {
@@ -141,6 +147,49 @@ namespace Examprep.Application.Services
         }
 
 
+
+        public async Task<CsvUploadResultDto> BulkUploadAsync(List<QuestionCreateDto> dtos, int userId)
+        {
+            var result = new CsvUploadResultDto();
+            var validQuestions = new List<Question>();
+
+            foreach (var dto in dtos)
+            {
+                if (string.IsNullOrWhiteSpace(dto.Text) || dto.Text.Length < 3)
+                {
+                    result.FailedCount++;
+                    result.Errors.Add($"Invalid text: '{dto.Text}'");
+                    continue;
+                }
+
+                if (dto.CorrectOption != null &&
+                    !new[] { "A", "B", "C", "D" }.Contains(dto.CorrectOption.ToUpper()))
+                {
+                    result.FailedCount++;
+                    result.Errors.Add($"Invalid CorrectOption for '{dto.Text}' — must be A, B, C, or D");
+                    continue;
+                }
+
+                validQuestions.Add(new Question
+                {
+                    text = dto.Text,
+                    UserId = userId,
+                    OptionA = dto.OptionA,
+                    OptionB = dto.OptionB,
+                    OptionC = dto.OptionC,
+                    OptionD = dto.OptionD,
+                    CorrectOption = dto.CorrectOption?.ToUpper(),
+                    Category = dto.Category
+                });
+            }
+
+            if (validQuestions.Count > 0)
+                await _repo.AddRangeAsync(validQuestions);
+
+            result.SuccessCount = validQuestions.Count;
+            _cache.Remove("all_questions");
+            return result;
+        }
 
 
     }

@@ -24,7 +24,13 @@ namespace Examprep.Infrastructure.Repositories
                     Id = q.id,
                     Text = q.text,
                     UserId = q.UserId,
-                    UserEmail = q.User != null ? q.User.Email : null
+                    UserEmail = q.User != null ? q.User.Email : null,
+                    OptionA = q.OptionA,
+                    OptionB = q.OptionB,
+                    OptionC = q.OptionC,
+                    OptionD = q.OptionD,
+                    CorrectOption = q.CorrectOption,
+                    Category = q.Category
                 })
                 .ToListAsync();
         }
@@ -66,12 +72,14 @@ namespace Examprep.Infrastructure.Repositories
             return (items, totalCount);
         }
         public async Task<(List<QuestionResponseDto> items, int totalCount)> QueryAsync(
-     string? search, string? sortBy, string? sortDir, int page, int pageSize)
+    string? search, string? category, string? sortBy, string? sortDir, int page, int pageSize)
         {
             var query = _context.Questions.AsNoTracking().AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(search))
                 query = query.Where(q => q.text.Contains(search));
+            if (!string.IsNullOrWhiteSpace(category))                      
+                query = query.Where(q => q.Category == category);
 
             query = sortBy?.ToLower() switch
             {
@@ -93,7 +101,13 @@ namespace Examprep.Infrastructure.Repositories
                     Id = q.id,
                     Text = q.text,
                     UserId = q.UserId,
-                    UserEmail = q.User != null ? q.User.Email : null
+                    UserEmail = q.User != null ? q.User.Email : null,
+                    OptionA = q.OptionA,
+                    OptionB = q.OptionB,
+                    OptionC = q.OptionC,
+                    OptionD = q.OptionD,
+                    CorrectOption = q.CorrectOption,
+                    Category = q.Category
                 })
                 .ToListAsync();
 
@@ -103,29 +117,61 @@ namespace Examprep.Infrastructure.Repositories
 
         public async Task AddQuestionWithCounterAsync(Question question, int userId)
         {
-            using var transaction = await _context.Database.BeginTransactionAsync();
-            try
+            var strategy = _context.Database.CreateExecutionStrategy();
+            await strategy.ExecuteAsync(async () =>
             {
-                // 1. Add question
-                _context.Questions.Add(question);
-                await _context.SaveChangesAsync();
-
-                // 2. Increment user's counter
-                var user = await _context.Users.FindAsync(userId);
-                if (user != null)
+                using var transaction = await _context.Database.BeginTransactionAsync();
+                try
                 {
-                    user.QuestionCount += 1;
+                    _context.Questions.Add(question);
                     await _context.SaveChangesAsync();
-                }
 
-                await transaction.CommitAsync();
-            }
-            catch
-            {
-                await transaction.RollbackAsync();
-                throw;
-            }
+                    var user = await _context.Users.FindAsync(userId);
+                    if (user != null)
+                    {
+                        user.QuestionCount += 1;
+                        await _context.SaveChangesAsync();
+                    }
+
+                    await transaction.CommitAsync();
+                }
+                catch
+                {
+                    await transaction.RollbackAsync();
+                    throw;
+                }
+            });
         }
 
+
+        public async Task AddRangeAsync(List<Question> questions)
+        {
+            _context.Questions.AddRange(questions);
+            await _context.SaveChangesAsync();
+        }
+
+
+        public async Task<List<Question>> GetRandomAsync(int count, string? category = null)
+        {
+            var query = _context.Questions
+                .AsNoTracking()
+                .Where(q => q.CorrectOption != null && q.OptionA != null);
+
+            if (!string.IsNullOrWhiteSpace(category))
+                query = query.Where(q => q.Category == category);
+
+            return await query
+                .OrderBy(q => Guid.NewGuid())
+                .Take(count)
+                .ToListAsync();
+        }
+
+        public async Task<List<Question>> GetByIdsAsync(List<int> ids)
+        {
+            return await _context.Questions
+                .AsNoTracking()
+                .Where(q => ids.Contains(q.id))
+                .ToListAsync();
+        }
     }
 }

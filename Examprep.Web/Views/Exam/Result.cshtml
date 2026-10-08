@@ -1,0 +1,99 @@
+﻿@model ExamResultDto
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Exam Result";
+}
+
+<div class="card border-0 shadow-sm mb-4">
+    <div class="card-body text-center py-4">
+        <h3 class="mb-3">Exam Complete</h3>
+        <div class="display-3 fw-bold @(Model.ScorePercent >= 60 ? "text-success" : "text-danger")">
+            @Model.CorrectCount / @Model.TotalQuestions
+        </div>
+        <p class="text-muted mb-3">@Model.ScorePercent% correct</p>
+        <a href="/Exam/Start" class="btn btn-primary">
+            <i class="bi bi-arrow-clockwise"></i> Try Again
+        </a>
+        <a href="/Exam/History" class="btn btn-outline-info">
+            <i class="bi bi-clock-history"></i> View History
+        </a>
+        <a href="/" class="btn btn-outline-secondary">Dashboard</a>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm">
+    <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="bi bi-journal-check me-1"></i> Answer Review</h5>
+    </div>
+    <div class="card-body">
+        @{ int idx = 1; }
+        @foreach (var item in Model.Items)
+        {
+            <div class="mb-4 p-3 border rounded">
+                <div class="d-flex justify-content-between align-items-start mb-3">
+                    <strong>@idx. @item.QuestionText</strong>
+                    @if (item.IsCorrect)
+                    {
+                        <span class="badge bg-success"><i class="bi bi-check"></i> Correct</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-danger"><i class="bi bi-x"></i> Wrong</span>
+                    }
+                </div>
+
+                @{
+                    var options = new (string Key, string? Text)[]
+                    {
+                        ("A", item.OptionA),
+                        ("B", item.OptionB),
+                        ("C", item.OptionC),
+                        ("D", item.OptionD)
+                    };
+                }
+
+                @foreach (var opt in options)
+                {
+                    if (string.IsNullOrEmpty(opt.Text)) continue;
+
+                    var isCorrect = item.CorrectOption == opt.Key;
+                    var isSelected = item.SelectedOption == opt.Key;
+
+                    string cls = "border rounded p-2 mb-2 d-flex align-items-center";
+                    string icon = "";
+
+                    if (isCorrect)
+                    {
+                        cls += " border-success bg-success-subtle";
+                        icon = "<i class='bi bi-check-circle-fill text-success me-2'></i>";
+                    }
+                    else if (isSelected && !isCorrect)
+                    {
+                        cls += " border-danger bg-danger-subtle";
+                        icon = "<i class='bi bi-x-circle-fill text-danger me-2'></i>";
+                    }
+                    else
+                    {
+                        cls += " border-light";
+                    }
+
+                    <div class="@cls">
+                        @Html.Raw(icon)
+                        <strong class="me-2">@opt.Key)</strong>
+                        <span>@opt.Text</span>
+
+                        @if (isSelected)
+                        {
+                            <span class="badge bg-secondary ms-auto">Your choice</span>
+                        }
+                        @if (isCorrect && !isSelected)
+                        {
+                            <span class="badge bg-success ms-auto">Correct</span>
+                        }
+                    </div>
+                }
+            </div>
+            idx++;
+        }
+    </div>
+</div>

@@ -1,0 +1,459 @@
+﻿@model List<Examprep.Application.DTOs.LeaderboardDto>
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Leaderboard";
+    var currentEmail = ViewBag.CurrentEmail as string;
+    var top3 = Model.Take(3).ToList();
+    var rest = Model.Skip(3).ToList();
+    var me = Model.FirstOrDefault(x => x.Email == currentEmail);
+}
+
+<style>
+    .lb-hero {
+        background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+        border-radius: 20px;
+        padding: 2.5rem;
+        color: white;
+        position: relative;
+        overflow: hidden;
+        margin-bottom: 2rem;
+    }
+
+    .lb-hero::after {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -5%;
+        width: 300px;
+        height: 300px;
+        background: rgba(255,255,255,0.1);
+        border-radius: 50%;
+    }
+
+    .lb-hero h1 {
+        font-weight: 800;
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .lb-hero p {
+        opacity: 0.9;
+        margin-bottom: 0;
+        font-size: 1.05rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .lb-hero .hero-icon {
+        position: absolute;
+        right: 2rem;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 7rem;
+        opacity: 0.15;
+        z-index: 1;
+    }
+
+    .podium-wrap {
+        display: flex;
+        justify-content: center;
+        align-items: flex-end;
+        gap: 1rem;
+        margin-bottom: 2.5rem;
+        padding: 2rem 1rem 0;
+        flex-wrap: wrap;
+    }
+
+    .podium-card {
+        background: #fff;
+        border-radius: 20px;
+        padding: 1.5rem 1rem 2rem;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        width: 200px;
+        position: relative;
+        transition: transform 0.3s ease;
+    }
+
+    .podium-card:hover {
+        transform: translateY(-6px);
+    }
+
+    .podium-card.rank-1 {
+        border-top: 5px solid #fbbf24;
+        transform: translateY(-20px);
+        box-shadow: 0 15px 40px rgba(251, 191, 36, 0.25);
+    }
+
+    .podium-card.rank-1:hover {
+        transform: translateY(-26px);
+    }
+
+    .podium-card.rank-2 {
+        border-top: 5px solid #94a3b8;
+    }
+
+    .podium-card.rank-3 {
+        border-top: 5px solid #b45309;
+    }
+
+    .crown-icon {
+        position: absolute;
+        top: -22px;
+        left: 50%;
+        transform: translateX(-50%);
+        font-size: 2rem;
+        color: #fbbf24;
+        text-shadow: 0 2px 8px rgba(251,191,36,0.5);
+    }
+
+    .podium-avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: white;
+        margin: 0 auto 0.75rem;
+        border: 4px solid white;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .rank-1 .podium-avatar {
+        background: linear-gradient(135deg, #fbbf24, #f59e0b);
+        width: 84px;
+        height: 84px;
+        font-size: 2rem;
+    }
+
+    .rank-2 .podium-avatar {
+        background: linear-gradient(135deg, #94a3b8, #64748b);
+    }
+
+    .rank-3 .podium-avatar {
+        background: linear-gradient(135deg, #b45309, #92400e);
+    }
+
+    .podium-name {
+        font-weight: 700;
+        color: #0f172a;
+        font-size: 0.95rem;
+        margin-bottom: 0.25rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .podium-score {
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: #4f46e5;
+        line-height: 1;
+        margin-bottom: 0.25rem;
+    }
+
+    .podium-label {
+        font-size: 0.75rem;
+        color: #64748b;
+    }
+
+    .podium-rank-badge {
+        position: absolute;
+        bottom: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #0f172a;
+        color: white;
+        padding: 0.25rem 0.85rem;
+        border-radius: 50px;
+        font-size: 0.75rem;
+        font-weight: 700;
+    }
+
+    .rank-1 .podium-rank-badge {
+        background: #fbbf24;
+        color: #0f172a;
+    }
+
+    .rank-2 .podium-rank-badge {
+        background: #94a3b8;
+    }
+
+    .rank-3 .podium-rank-badge {
+        background: #b45309;
+    }
+
+    .my-rank-card {
+        background: linear-gradient(135deg, #4f46e5, #0ea5e9);
+        border-radius: 16px;
+        padding: 1.25rem 1.5rem;
+        color: white;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 8px 20px rgba(79,70,229,0.25);
+    }
+
+    .my-rank-badge {
+        background: rgba(255,255,255,0.2);
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        font-weight: 800;
+        font-size: 1.25rem;
+        min-width: 70px;
+        text-align: center;
+    }
+
+    .rank-list-card {
+        background: #fff;
+        border-radius: 16px;
+        border: 1px solid #e2e8f0;
+        overflow: hidden;
+    }
+
+    .rank-row {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        border-bottom: 1px solid #f1f5f9;
+        transition: background 0.15s ease;
+    }
+
+    .rank-row:last-child {
+        border-bottom: 0;
+    }
+
+    .rank-row:hover {
+        background: #f8fafc;
+    }
+
+    .rank-row.highlight {
+        background: #eef2ff;
+        border-left: 4px solid #4f46e5;
+    }
+
+    .rank-number {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #f1f5f9;
+        color: #475569;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        flex-shrink: 0;
+    }
+
+    .rank-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        color: white;
+        background: linear-gradient(135deg, #4f46e5, #7c3aed);
+        flex-shrink: 0;
+        font-size: 0.85rem;
+    }
+
+    .rank-user-info {
+        flex: 1;
+        min-width: 0;
+    }
+
+    .rank-user-email {
+        font-weight: 600;
+        color: #0f172a;
+        font-size: 0.95rem;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .rank-user-stats {
+        font-size: 0.8rem;
+        color: #64748b;
+        margin-top: 2px;
+    }
+
+    .rank-score {
+        font-weight: 800;
+        color: #4f46e5;
+        font-size: 1.1rem;
+        text-align: right;
+        white-space: nowrap;
+    }
+
+    .rank-score small {
+        display: block;
+        font-weight: 500;
+        color: #64748b;
+        font-size: 0.75rem;
+    }
+</style>
+
+<!-- Hero -->
+<div class="lb-hero">
+    <h1><i class="bi bi-trophy-fill me-2"></i> Leaderboard</h1>
+    <p>See how you rank against other Examprep users.</p>
+    <i class="bi bi-trophy hero-icon"></i>
+</div>
+
+@if (Model.Count == 0)
+{
+    <div class="card border-0 shadow-sm rounded-4">
+        <div class="card-body text-center py-5">
+            <i class="bi bi-trophy text-muted" style="font-size: 3rem;"></i>
+            <p class="mt-3 mb-0 text-muted">No rankings yet. Be the first to top the leaderboard!</p>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Podium (Top 3) -->
+    if (top3.Count >= 1)
+    {
+        <div class="podium-wrap">
+            @if (top3.Count >= 2)
+            {
+                <div class="podium-card rank-2">
+                    <div class="podium-avatar">@(top3[1].Email.Substring(0, 1).ToUpper())</div>
+                    <div class="podium-name">@top3[1].Email.Split('@')[0]</div>
+                    <div class="podium-score">@top3[1].AvgScore%</div>
+                    <div class="podium-label">Avg Score</div>
+                    <div class="podium-rank-badge">#2</div>
+                </div>
+            }
+
+            <div class="podium-card rank-1">
+                <i class="bi bi-trophy-fill crown-icon"></i>
+                <div class="podium-avatar">@(top3[0].Email.Substring(0, 1).ToUpper())</div>
+                <div class="podium-name">@top3[0].Email.Split('@')[0]</div>
+                <div class="podium-score">@top3[0].AvgScore%</div>
+                <div class="podium-label">Avg Score</div>
+                <div class="podium-rank-badge">#1</div>
+            </div>
+
+            @if (top3.Count >= 3)
+            {
+                <div class="podium-card rank-3">
+                    <div class="podium-avatar">@(top3[2].Email.Substring(0, 1).ToUpper())</div>
+                    <div class="podium-name">@top3[2].Email.Split('@')[0]</div>
+                    <div class="podium-score">@top3[2].AvgScore%</div>
+                    <div class="podium-label">Avg Score</div>
+                    <div class="podium-rank-badge">#3</div>
+                </div>
+            }
+        </div>
+    }
+
+    <!-- Your Rank Card -->
+    @if (me != null)
+    {
+        <div class="my-rank-card">
+            <div class="my-rank-badge">#@me.Rank</div>
+            <div class="flex-grow-1">
+                <div style="font-weight:700; font-size: 1.05rem;">Your Current Rank</div>
+                <div style="opacity:0.85; font-size: 0.9rem;">
+                    @me.TotalAttempts exams · @me.AvgScore% avg · @me.BestScore% best
+                </div>
+            </div>
+            <i class="bi bi-award-fill" style="font-size: 2rem; opacity: 0.6;"></i>
+        </div>
+    }
+
+    <!-- Ranked List (Position 4 onwards) -->
+    @if (rest.Count > 0)
+    {
+        <div class="d-flex justify-content-between align-items-center mb-3 flex-wrap gap-2">
+            <h5 class="fw-bold mb-0" style="color: #0f172a;">
+                <i class="bi bi-list-ol text-primary me-2"></i> All Rankings
+            </h5>
+            <div class="btn-group" role="group">
+                <button type="button" class="btn btn-sm btn-outline-primary active" onclick="filterRows('all', this)">
+                    All (@Model.Count)
+                </button>
+                <button type="button" class="btn btn-sm btn-outline-primary" onclick="filterRows('top10', this)">
+                    Top 10
+                </button>
+            </div>
+        </div>
+
+        <div class="mb-3">
+            <div class="input-group">
+                <span class="input-group-text bg-white border-end-0">
+                    <i class="bi bi-search text-muted"></i>
+                </span>
+                <input type="text" class="form-control border-start-0" id="searchBox"
+                       placeholder="Search by username..." onkeyup="searchRows(this.value)">
+            </div>
+        </div>
+
+        <div class="rank-list-card">
+            @{
+                int rowIndex = 0;
+            }
+            @foreach (var u in rest)
+            {
+                rowIndex++;
+                var isMe = u.Email == currentEmail;
+                var isTop10 = rowIndex <= 7;
+                <div class="rank-row @(isMe ? "highlight" : "")" data-top="@(isTop10 ? "true" : "false")">
+                    <div class="rank-number">@u.Rank</div>
+                    <div class="rank-avatar">@(u.Email.Substring(0, 1).ToUpper())</div>
+                    <div class="rank-user-info">
+                        <div class="rank-user-email">
+                            @u.Email.Split('@')[0]
+                            @if (isMe)
+                            {
+                                <span class="badge bg-primary ms-2" style="font-size: 0.65rem;">You</span>
+                            }
+                        </div>
+                        <div class="rank-user-stats">
+                            @u.TotalAttempts exams · @u.TotalCorrect correct answers
+                        </div>
+                    </div>
+                    <div class="rank-score">
+                        @u.AvgScore%
+                        <small>Best: @u.BestScore%</small>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <script>
+            function filterRows(mode, btn) {
+                document.querySelectorAll('.btn-group .btn').forEach(function(b) {
+                    b.classList.remove('active');
+                });
+                btn.classList.add('active');
+
+                document.querySelectorAll('.rank-row').forEach(function(row) {
+                    if (mode === 'all') {
+                        row.style.display = '';
+                    } else if (mode === 'top10') {
+                        row.style.display = row.dataset.top === 'true' ? '' : 'none';
+                    }
+                });
+            }
+
+            function searchRows(query) {
+                var q = query.toLowerCase().trim();
+                document.querySelectorAll('.rank-row').forEach(function(row) {
+                    var email = row.querySelector('.rank-user-email').textContent.toLowerCase();
+                    row.style.display = email.includes(q) ? '' : 'none';
+                });
+            }
+        </script>
+    }
+}

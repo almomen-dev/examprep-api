@@ -12,6 +12,8 @@ namespace Examprep.Infrastructure.Data
 
         public DbSet<Question> Questions { get; set; }
         public DbSet<User> Users { get; set; }
+        public DbSet<ExamAttempt> ExamAttempts { get; set; }
+        public DbSet<ExamAnswer> ExamAnswers { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -34,6 +36,17 @@ namespace Examprep.Infrastructure.Data
 
             modelBuilder.Entity<Question>()
                 .HasIndex(q => q.UserId);
+
+
+
+      modelBuilder.Entity<ExamAttempt>()
+    .HasMany(e => e.Answers)
+    .WithOne(a => a.ExamAttempt)
+    .HasForeignKey(a => a.ExamAttemptId)
+    .OnDelete(DeleteBehavior.Cascade);
+
+
+
         }
     }
 }

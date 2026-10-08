@@ -1,0 +1,45 @@
+﻿@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Take Exam";
+    var categories = ViewBag.Categories as List<string?> ?? new List<string?>();
+}
+
+<div class="text-center mb-5">
+    <h1 class="fw-bold" style="color: #0f172a;">
+        <i class="bi bi-pencil-square text-primary me-2"></i> Choose Your Exam
+    </h1>
+    <p class="text-muted fs-5">Select a subject or take a mixed exam across all subjects.</p>
+</div>
+
+<div class="row g-4 justify-content-center">
+    <!-- All Subjects — uses "All" keyword -->
+    <div class="col-md-6 col-lg-4">
+        <a asp-controller="Exam" asp-action="Start" asp-route-category="All" class="text-decoration-none">
+            <div class="card border-0 shadow-sm rounded-4 h-100 p-4 text-center">
+                <div class="mx-auto bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+                    <i class="bi bi-collection fs-1"></i>
+                </div>
+                <h4 class="fw-bold text-dark">All Subjects</h4>
+                <p class="text-muted mb-0">Mixed questions from every category</p>
+            </div>
+        </a>
+    </div>
+
+    <!-- Dynamic categories from ViewBag -->
+    @foreach (var c in categories)
+    {
+        if (string.IsNullOrEmpty(c)) continue;
+
+        <div class="col-md-6 col-lg-4">
+            <a asp-controller="Exam" asp-action="Start" asp-route-category="@c" class="text-decoration-none">
+                <div class="card border-0 shadow-sm rounded-4 h-100 p-4 text-center">
+                    <div class="mx-auto bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center mb-4" style="width: 80px; height: 80px;">
+                        <i class="bi bi-book fs-1"></i>
+                    </div>
+                    <h4 class="fw-bold text-dark">@c</h4>
+                    <p class="text-muted mb-0">Practice @c questions</p>
+                </div>
+            </a>
+        </div>
+    }
+</div>

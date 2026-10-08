@@ -4,7 +4,6 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Configuration;
 
 namespace Examprep.Application.Services
 {
@@ -26,9 +25,13 @@ namespace Examprep.Application.Services
                 new Claim(ClaimTypes.Role, user.Role)
             };
 
-            var key = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
+            var keyString = _config["Jwt:Key"]
+                ?? throw new InvalidOperationException("Jwt:Key is missing in configuration");
 
+            if (keyString.Length < 32)
+                throw new InvalidOperationException("Jwt:Key must be at least 32 characters long");
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(keyString));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
             var token = new JwtSecurityToken(
@@ -36,7 +39,7 @@ namespace Examprep.Application.Services
                 audience: _config["Jwt:Audience"],
                 claims: claims,
                 expires: DateTime.UtcNow.AddMinutes(
-                    int.Parse(_config["Jwt:ExpiryMinutes"]!)),
+                    int.Parse(_config["Jwt:ExpiryMinutes"] ?? "60")),
                 signingCredentials: creds
             );
 

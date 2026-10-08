@@ -1,0 +1,274 @@
+﻿@model Examprep.Application.DTOs.StartExamDto
+@{
+    Layout = "_DashboardLayout";
+    ViewData["Title"] = "Take Exam";
+}
+
+<style>
+    .question-card {
+        background: #fff;
+        border: 1px solid #e2e8f0;
+        border-radius: 16px;
+        padding: 1.75rem;
+        margin-bottom: 1.25rem;
+        transition: all 0.2s ease;
+    }
+
+    .question-card:hover {
+        border-color: #c7d2fe;
+        box-shadow: 0 8px 20px rgba(79, 70, 229, 0.06);
+    }
+
+    .question-number {
+        background: #4f46e5;
+        color: white;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.85rem;
+        margin-right: 0.75rem;
+        flex-shrink: 0;
+    }
+
+    .option-label {
+        display: flex;
+        align-items: center;
+        padding: 0.85rem 1rem;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        margin-bottom: 0.6rem;
+        cursor: pointer;
+        transition: all 0.15s ease;
+        font-size: 0.95rem;
+    }
+
+    .option-label:hover {
+        background: #f8fafc;
+        border-color: #c7d2fe;
+    }
+
+    .option-label input[type="radio"] {
+        margin-right: 0.85rem;
+        accent-color: #4f46e5;
+        transform: scale(1.15);
+    }
+
+    .timer-badge {
+        background: linear-gradient(135deg, #4f46e5, #0ea5e9);
+        color: white;
+        padding: 0.6rem 1.25rem;
+        border-radius: 50px;
+        font-weight: 700;
+        font-size: 1rem;
+        box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .timer-badge.warning {
+        background: linear-gradient(135deg, #f97316, #dc3545);
+        animation: pulse 1s infinite;
+    }
+
+    .modal-backdrop {
+        z-index: 1055;
+    }
+
+    .modal {
+        z-index: 1060;
+    }
+
+    .progress-sticky {
+        position: sticky;
+        top: 0;
+        z-index: 1020;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        border-radius: 12px;
+        padding: 0.75rem 1rem;
+        margin-bottom: 1.5rem;
+        border: 1px solid #e2e8f0;
+    }
+</style>
+
+@section Styles {
+    <style>
+        @@keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+    </style>
+}
+
+<!-- Header -->
+<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+    <div>
+        <h2 class="fw-bold mb-1" style="color: #0f172a;">
+            <i class="bi bi-pencil-square text-primary me-2"></i> Exam in Progress
+        </h2>
+        <p class="text-muted mb-0">
+            Answer all <span id="totalQuestionsHeader">@Model.Questions.Count</span> questions, then submit.
+        </p>
+    </div>
+    <div class="timer-badge" id="timerBadge">
+        <i class="bi bi-clock-fill"></i>
+        <span id="timer">30:00</span>
+    </div>
+</div>
+
+<!-- Sticky Progress Bar -->
+<div class="progress-sticky">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+        <small class="fw-bold text-muted">Progress</small>
+        <small class="fw-bold text-primary">
+            <span id="answeredCount">0</span> / <span id="totalQuestionsProgress">@Model.Questions.Count</span> answered
+        </small>
+    </div>
+    <div class="progress" style="height: 6px;">
+        <div class="progress-bar bg-primary" id="progressBar" style="width: 0%; transition: width 0.3s ease;"></div>
+    </div>
+</div>
+
+<!-- Exam Form -->
+<form method="post" asp-controller="Exam" asp-action="Submit" id="examForm">
+    <input type="hidden" name="attemptId" value="@Model.AttemptId" />
+    <input type="hidden" id="totalQuestionsData" value="@Model.Questions.Count" />
+
+    @{
+        int idx = 1;
+    }
+    @foreach (var q in Model.Questions)
+    {
+        <div class="question-card">
+            <div class="d-flex align-items-start mb-3">
+                <span class="question-number">@idx</span>
+                <h5 class="fw-semibold mb-0" style="color: #0f172a; line-height: 1.5;">@q.Text</h5>
+            </div>
+
+            <div class="ps-4">
+                <label class="option-label">
+                    <input type="radio" name="q_@q.Id" value="A" class="question-radio" data-qid="@q.Id" />
+                    <span><strong>A.</strong> @q.OptionA</span>
+                </label>
+
+                <label class="option-label">
+                    <input type="radio" name="q_@q.Id" value="B" class="question-radio" data-qid="@q.Id" />
+                    <span><strong>B.</strong> @q.OptionB</span>
+                </label>
+
+                @if (!string.IsNullOrEmpty(q.OptionC))
+                {
+                    <label class="option-label">
+                        <input type="radio" name="q_@q.Id" value="C" class="question-radio" data-qid="@q.Id" />
+                        <span><strong>C.</strong> @q.OptionC</span>
+                    </label>
+                }
+
+                @if (!string.IsNullOrEmpty(q.OptionD))
+                {
+                    <label class="option-label">
+                        <input type="radio" name="q_@q.Id" value="D" class="question-radio" data-qid="@q.Id" />
+                        <span><strong>D.</strong> @q.OptionD</span>
+                    </label>
+                }
+            </div>
+        </div>
+        idx++;
+    }
+
+    <!-- Submit Button -->
+    <div class="text-center mt-4 mb-5">
+        <button type="button" class="btn btn-primary btn-lg px-5 fw-bold" data-bs-toggle="modal" data-bs-target="#submitModal">
+            <i class="bi bi-check-circle me-2"></i> Submit Exam
+        </button>
+    </div>
+</form>
+
+<!-- Modern Submit Confirmation Modal -->
+<div class="modal fade" id="submitModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg rounded-4">
+            <div class="modal-body p-4 text-center">
+                <div class="bg-warning bg-opacity-10 text-warning rounded-circle d-inline-flex align-items-center justify-content-center mb-3" style="width: 72px; height: 72px;">
+                    <i class="bi bi-exclamation-triangle-fill fs-1"></i>
+                </div>
+                <h4 class="fw-bold mb-2" style="color: #0f172a;">Submit Your Exam?</h4>
+                <p class="text-muted mb-2">
+                    You've answered <strong id="modalAnsweredCount">0</strong> of
+                    <strong>@Model.Questions.Count</strong> questions.
+                </p>
+                <p class="text-muted mb-4">Once submitted, you cannot change your answers.</p>
+
+                <div class="d-flex gap-2 justify-content-center">
+                    <button type="button" class="btn btn-light border px-4 fw-medium" data-bs-dismiss="modal">
+                        <i class="bi bi-x-lg me-1"></i> Cancel
+                    </button>
+                    <button type="button" class="btn btn-primary px-4 fw-medium" id="confirmSubmitBtn">
+                        <i class="bi bi-check-circle me-1"></i> Yes, Submit
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // ===== TIMER =====
+        var totalSeconds = 30 * 60; // 30 minutes
+        var timerEl = document.getElementById('timer');
+        var timerBadge = document.getElementById('timerBadge');
+
+        function updateTimer() {
+            if (totalSeconds <= 0) {
+                timerEl.textContent = '00:00';
+                document.getElementById('examForm').submit();
+                return;
+            }
+            var mins = Math.floor(totalSeconds / 60).toString().padStart(2, '0');
+            var secs = (totalSeconds % 60).toString().padStart(2, '0');
+            timerEl.textContent = mins + ':' + secs;
+
+            if (totalSeconds <= 300) {
+                timerBadge.classList.add('warning');
+            }
+
+            totalSeconds--;
+        }
+        updateTimer();
+        setInterval(updateTimer, 1000);
+
+        // ===== PROGRESS TRACKING =====
+        var totalQuestions = parseInt(document.getElementById('totalQuestionsData').value, 10);
+        var answered = new Set();
+
+        document.querySelectorAll('.question-radio').forEach(function(radio) {
+            radio.addEventListener('change', function() {
+                var qid = radio.dataset.qid;
+                if (radio.checked) answered.add(qid);
+
+                var count = answered.size;
+                var percent = (count / totalQuestions) * 100;
+
+                document.getElementById('answeredCount').textContent = count;
+                document.getElementById('modalAnsweredCount').textContent = count;
+                document.getElementById('progressBar').style.width = percent + '%';
+            });
+        });
+
+        // ===== SUBMIT FROM MODAL =====
+        document.getElementById('confirmSubmitBtn').addEventListener('click', function() {
+            document.getElementById('examForm').submit();
+        });
+
+        // ===== UPDATE MODAL COUNT ON OPEN =====
+        document.getElementById('submitModal').addEventListener('show.bs.modal', function() {
+            document.getElementById('modalAnsweredCount').textContent = answered.size;
+        });
+    </script>
+}
