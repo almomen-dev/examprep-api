@@ -1,80 +1,163 @@
-# Examprep API
+# Examprep
 
-A REST API for a Q&A exam-prep system built with ASP.NET Core 8.
+An exam preparation platform built with ASP.NET Core. The project includes a REST API and an ASP.NET Core MVC web application for authentication, question management, and admin operations.
 
-## Overview
+## Features
 
-This is a backend API that lets users register, log in, create questions, and search through them. It uses JWT tokens for auth, EF Core for database access, and follows a clean layered structure.
+* User registration and login
+* JWT access and refresh token authentication
+* Role-based authorization (Admin/User)
+* Question CRUD
+* Question search, filtering, sorting, and pagination
+* ASP.NET Core MVC web interface
+* API versioning
+* Rate limiting
+* CORS
+* Response caching
+* Global exception handling
+* Serilog logging
+* Unit testing
+
+## Architecture
+
+The solution is separated into multiple projects:
+
+```text
+Examprep
+│
+├── Examprep.Web
+│   └── ASP.NET Core MVC frontend
+│
+├── Examprep.API
+│   └── REST API
+│
+├── Examprep.Application
+│   └── DTOs, services, repository interfaces
+│
+├── Examprep.Domain
+│   └── Domain models
+│
+├── Examprep.Infrastructure
+│   └── EF Core, DbContext, repositories
+│
+└── Examprep.Tests
+    └── Unit tests
+```
+
+The MVC application communicates with the API through HTTP. The API handles business logic and database operations.
 
 ## Tech Stack
 
-- ASP.NET Core 8 Web API
-- Entity Framework Core with SQL Server
-- JWT authentication (access + refresh tokens)
-- BCrypt for password hashing
-- Serilog for logging
-- Swagger for API documentation
+**Backend**
 
-## Project Structure
+* C#
+* ASP.NET Core 8
+* Entity Framework Core
+* SQL Server
+* JWT
+* BCrypt
+* Serilog
 
-The solution has five projects:
+**Frontend**
 
-- Examprep.API: controllers, middleware, and app startup
-- Examprep.Application: DTOs, services, and repository interfaces
-- Examprep.Domain: entity classes
-- Examprep.Infrastructure: EF Core DbContext and repository implementations
-- Examprep.Tests: unit tests for the service layer
+* ASP.NET Core MVC
+* Razor Views
+* Bootstrap
+* HTML/CSS
+* JavaScript
 
-## Main Features
+**Testing**
 
-- User registration and login
-- JWT authentication with refresh tokens
-- Role-based authorization (Admin and User)
-- Full CRUD for questions
-- Search, filter, sort, and pagination
-- Rate limiting and CORS
-- API versioning (v1)
-- Global exception handling
-- Response caching
-- Unit tests with xUnit, Moq, and FluentAssertions
+* xUnit
+* Moq
+* FluentAssertions
 
-## Endpoints
+## Authentication
 
-Auth:
-- POST /api/v1/auth/register
-- POST /api/v1/auth/login
-- POST /api/v1/auth/refresh
+The application uses JWT authentication with access and refresh tokens.
 
-Questions:
-- GET /api/v1/questions
-- GET /api/v1/questions/{id}
-- GET /api/v1/questions/search?search=
-- GET /api/v1/questions/paged?page=1&pageSize=10
-- POST /api/v1/questions (requires login)
-- PUT /api/v1/questions/{id} (requires login)
-- DELETE /api/v1/questions/{id} (admin only)
+```text
+MVC
+ ↓
+API
+ ↓
+AuthService
+ ↓
+User Repository
+ ↓
+SQL Server
+```
 
-## How to Run
+Passwords are hashed using BCrypt.
 
-1. Clone the repo
-2. Update the connection string in appsettings.json
-3. Add the JWT key via user secrets
-4. Run `dotnet ef database update`
-5. Run `dotnet run --project Examprep.API`
-6. Open Swagger at http://almomen.runasp.net/
+Admin and User roles are supported.
 
-## Testing
+## API Endpoints
 
-1. Register a user with POST /api/v1/auth/register
-2. Log in with POST /api/v1/auth/login
-3. Copy the access token
-4. Click Authorize in Swagger and paste "Bearer TOKEN"
-5. Test the protected endpoints
+### Authentication
 
-## Notes
+```text
+POST /api/v1/auth/register
+POST /api/v1/auth/login
+POST /api/v1/auth/refresh
+```
 
-Passwords are hashed with BCrypt. The JWT secret key is stored in user secrets locally and should be set as an environment variable in production.
+### Questions
+
+```text
+GET    /api/v1/questions
+GET    /api/v1/questions/{id}
+GET    /api/v1/questions/search?search=
+GET    /api/v1/questions/paged?page=1&pageSize=10
+
+POST   /api/v1/questions
+PUT    /api/v1/questions/{id}
+DELETE /api/v1/questions/{id}
+```
+
+Protected endpoints require authentication. Question deletion requires the Admin role.
+
+## Running Locally
+
+Clone the repository:
+
+```bash
+git clone https://github.com/almomen-dev/Examprep.git
+cd Examprep
+```
+
+Configure the SQL Server connection string and JWT key using local configuration/User Secrets.
+
+Apply migrations:
+
+```bash
+dotnet ef database update
+```
+
+Run the API:
+
+```bash
+dotnet run --project Examprep.API
+```
+
+Run the MVC application:
+
+```bash
+dotnet run --project Examprep.Web
+```
+
+Swagger is available when the API is running.
+
+## Deployment
+
+The API is deployed on MonsterASP with a hosted SQL Server database.
+
+Production secrets are kept outside the source code.
 
 ## Author
 
-Al Momen - github.com/almomen-dev
+**Al Momen**
+
+ASP.NET Core Developer
+
+GitHub: https://github.com/almomen-dev
